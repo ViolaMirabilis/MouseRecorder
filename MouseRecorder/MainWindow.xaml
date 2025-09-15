@@ -1,0 +1,44 @@
+﻿<Window x:Class="MouseRecorder.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MouseRecorder"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="125" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="75"/>
+            <ColumnDefinition Width="75"/>
+            <ColumnDefinition Width="75"/>
+            <ColumnDefinition Width="75"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- BUTTONS IN THE FIRST ROW -->
+        <Button x:Name="PlayPauseButton" Grid.Column="0" Background="Transparent" Margin="5" BorderThickness="0" Click="PlayPauseButton_Click">
+            <Image x:Name="PlayPauseButtonImage" Source="/Assets/PlayButton.png"/>
+        </Button>
+
+        <Button x:Name="StopButton" Grid.Column="1" Background="Transparent" Margin="5" BorderThickness="0" Click="StopButton_Click">
+            <Image Source="/Assets/StopButton.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+        </Button>
+
+        <Button x:Name="RecordButton" Grid.Column="2" Background="Transparent" Margin="5" BorderThickness="0" Click="RecordButton_Click">
+            <Image Source="/Assets/RecordButton.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+        </Button>
+
+
+        <Button x:Name="SettingsButton" Grid.Column="4" Background="Transparent" Content="⚙️" FontSize="16" Margin="5" BorderThickness="0" Click="SettingsButton_Click"/>
+        
+        <!-- MOUSE POSITION PLACEHOLDER -->
+        <TextBlock Grid.Row="1" Text="X position: " VerticalAlignment="Top" Margin="5"/>
+        <TextBlock Grid.Row="1" Text="Y position: " VerticalAlignment="Bottom" Margin="5"/>
+
+        <TextBlock x:Name="Xpos" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" FontSize="10" Text="1280" Margin="5"/>
+        <TextBlock x:Name="Ypos" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" FontSize="10" Text="920" Margin="5"/>
+    </Grid>
+</Window>
