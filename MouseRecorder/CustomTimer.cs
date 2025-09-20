@@ -8,7 +8,7 @@ public class CustomTimer
     private DispatcherTimer timer;
     private Action tickAction;      // what happens every tick
 
-    public bool IsRunniong => timer.IsEnabled;
+    public bool IsRunning => timer.IsEnabled;
 
     public CustomTimer(int msInterval, Action tickAction)
     {

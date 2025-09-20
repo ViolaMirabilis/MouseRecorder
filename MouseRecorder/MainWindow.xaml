@@ -5,40 +5,67 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MouseRecorder"
         mc:Ignorable="d"
-        Title="MainWindow" Height="125" Width="300">
+        Title="MainWindow" Height="140" Width="325">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="75"/>
-            <ColumnDefinition Width="75"/>
-            <ColumnDefinition Width="75"/>
-            <ColumnDefinition Width="75"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!-- BUTTONS IN THE FIRST ROW -->
-        <Button x:Name="PlayPauseButton" Grid.Column="0" Background="Transparent" Margin="5" BorderThickness="0" Click="PlayPauseButton_Click">
+        <Button x:Name="PlayPauseButton" Grid.Column="0" Background="Transparent" Margin="5" BorderThickness="0" HorizontalAlignment="Center" Click="PlayPauseButton_Click">
             <Image x:Name="PlayPauseButtonImage" Source="/Assets/PlayButton.png"/>
         </Button>
 
-        <Button x:Name="StopButton" Grid.Column="1" Background="Transparent" Margin="5" BorderThickness="0" Click="StopButton_Click">
+        <Button x:Name="StopButton" Grid.Column="1" Background="Transparent" Margin="5" BorderThickness="0" HorizontalAlignment="Center" Click="StopButton_Click">
             <Image Source="/Assets/StopButton.png" RenderOptions.BitmapScalingMode="HighQuality"/>
         </Button>
 
-        <Button x:Name="RecordButton" Grid.Column="2" Background="Transparent" Margin="5" BorderThickness="0" Click="RecordButton_Click">
+        <Button x:Name="RecordButton" Grid.Column="2" Background="Transparent" Margin="5" BorderThickness="0" HorizontalAlignment="Center" Click="RecordButton_Click">
             <Image Source="/Assets/RecordButton.png" RenderOptions.BitmapScalingMode="HighQuality"/>
         </Button>
 
-
-        <Button x:Name="SettingsButton" Grid.Column="4" Background="Transparent" Content="⚙️" FontSize="16" Margin="5" BorderThickness="0" Click="SettingsButton_Click"/>
+        <Button x:Name="SettingsButton" Grid.Column="4" Background="Transparent" Content="⚙️" FontSize="16" Margin="5" HorizontalAlignment="Center" BorderThickness="0" Click="SettingsButton_Click"/>
         
         <!-- MOUSE POSITION PLACEHOLDER -->
+        <!--
         <TextBlock Grid.Row="1" Text="X position: " VerticalAlignment="Top" Margin="5"/>
         <TextBlock Grid.Row="1" Text="Y position: " VerticalAlignment="Bottom" Margin="5"/>
 
         <TextBlock x:Name="Xpos" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" FontSize="10" Text="1280" Margin="5"/>
         <TextBlock x:Name="Ypos" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" FontSize="10" Text="920" Margin="5"/>
+        -->
+        <!-- END OF THE PLACEHOLDER -->
+
+        <!-- Row 1-->
+        <Label Grid.Row="1" Grid.Column="0" Content="Playback:" FontSize="14" FontFamily="Bahnschrift" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+
+        <ComboBox x:Name="ComboBox" IsEditable="True" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Height="20" Width="230"
+                  SelectedIndex="0" Margin="0,0,10,0"
+                  HorizontalAlignment="Right" VerticalAlignment="Center" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+
+        <!-- Row 2-->
+        <Label Grid.Row="2" Grid.Column="0" Content="Status:" FontSize="14" FontFamily="Bahnschrift" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+
+        <Label x:Name="lblStatus" Grid.Row="2" Grid.Column="1" Content="Idle" FontSize="14" FontFamily="Bahnschrift" HorizontalAlignment="Left" VerticalAlignment="Bottom" HorizontalContentAlignment="Center"/>
+
+        <CheckBox x:Name="chbxInfiniteLoop" Grid.Row="2" Grid.Column="2" Content="Infinite loop" FlowDirection="RightToLeft"
+                  HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="10" Margin="5,0,0,0">
+        </CheckBox>
+
+        <Label Grid.Row="3" Grid.Column="2" Content="Playback count:"
+          HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="10"/>
+
+        <TextBox Grid.Row="3" Grid.Column="3" Height="15" Width="30" HorizontalAlignment="Left"/>
+
+
     </Grid>
 </Window>

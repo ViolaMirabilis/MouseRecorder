@@ -1,17 +1,9 @@
-﻿using System.Drawing;
+﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
+
 
 namespace MouseRecorder
 {
@@ -22,13 +14,18 @@ namespace MouseRecorder
     {
         // where the mouse recordings are saved
         const string filePath = @"C:\Users\zajac\Desktop\C# Projects\MouseRecorder\MouseRecorder\Temporary\coordinates.txt";
+        const string savedRecordingsPath = @"C:\Users\zajac\Desktop\C# Projects\MouseRecorder\MouseRecorder\SavedRecordings";
 
         private Enums.ApplicationState currentState = Enums.ApplicationState.Idle;
 
         private CustomTimer recordingTimer;     // records mouse movement
         private CustomTimer playbackTimer;      // playus mouse movement
 
-        #region Mouse information region
+        private List<string> recordedMovement = new List<string>();      // temporarily holds position and action before writing to a file
+        private ObservableCollection<string> comboBoxEntries = new ObservableCollection<string>();      // populates the combobox list
+        private string currentlySelectedRecording = "";
+
+        #region DLL Import Mouse Information Region
         [DllImport("user32.dll")]
         static extern bool GetCursorPos(out POINT lpPoint);
 
@@ -37,6 +34,9 @@ namespace MouseRecorder
 
         [DllImport("user32.dll")]       // @see https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getasynckeystate
         static extern short GetAsyncKeyState(int vKey);      // checks what button is currently pressed. Returns short to check whether the button is pressed or not
+
+        [DllImport("user32.dll")]
+        static extern bool SetCursorPos(int x, int y);
 
         #endregion
 
@@ -69,6 +69,8 @@ namespace MouseRecorder
         {
             InitializeComponent();
 
+            FillComboBoxEntriesOnInit();
+
             recordingTimer = new CustomTimer(8, WritePoint);
             playbackTimer = new CustomTimer(8, ReadPoint);
             
@@ -80,8 +82,8 @@ namespace MouseRecorder
             POINT p;        // a field of POINT type
             if (GetCursorPos(out p))
             {
-                Xpos.Text = p.X.ToString();
-                Ypos.Text = p.Y.ToString();
+                //Xpos.Text = p.X.ToString();
+                //Ypos.Text = p.Y.ToString();
 
                 bool leftDown = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;       // checks if left is down
                 bool rightDown = (GetAsyncKeyState(VK_RBUTTON) & 0x8000) != 0;       // checks if right is down
@@ -91,10 +93,23 @@ namespace MouseRecorder
                 if (leftDown) currentAction += "Left click";
                 if (rightDown) currentAction += "Right click";
 
-                string coords = $"{p.X.ToString()}, {p.Y.ToString()}, {DateTime.Now}, {currentAction}";      // date not needed ig
-                File.AppendAllText(filePath, coords + Environment.NewLine);
+                string mouseCoordinates = $"{p.X.ToString()}, {p.Y.ToString()}, {DateTime.Now}, {currentAction}";      // date not needed ig
+                recordedMovement.Add(mouseCoordinates);     // adding to a temporary list
+                //File.AppendAllText(filePath, coords + Environment.NewLine);
                 
             }
+        }
+
+        private void FillComboBoxEntriesOnInit()
+        {
+            string[] fileEntries = Directory.GetFiles(savedRecordingsPath);
+            foreach (var fileName in fileEntries)
+            {
+                comboBoxEntries.Add(Path.GetFileNameWithoutExtension(fileName));
+                //comboBoxEntries.Add(fileName);
+            }
+
+            ComboBox.ItemsSource = comboBoxEntries;
         }
 
         private void ReadPoint()
@@ -118,44 +133,85 @@ namespace MouseRecorder
             //mouse_event(LEFTUP, 0, 0, 0, IntPtr.Zero);
         }
 
-        // buttons logic
+        private string SetCurrentStateLabel(Enums.ApplicationState currentState)
+        {
+            return currentState switch
+            {
+                Enums.ApplicationState.Idle => "Idle",
+                Enums.ApplicationState.Recording => "Recording...",
+                Enums.ApplicationState.Playing => "Playing...",
+                Enums.ApplicationState.Paused => "Paused"
+            };
+        }
 
+        // Buttons Logic
         private void PlayPauseButton_Click(object sender, RoutedEventArgs e)
         {
-            if (currentState == Enums.ApplicationState.Idle || currentState == Enums.ApplicationState.Paused)
+
+            if (currentState == Enums.ApplicationState.Idle || currentState == Enums.ApplicationState.Paused || currentState == Enums.ApplicationState.Playing)
             {
+
+                if (comboBoxEntries.Count <= 0)
+                {
+                    return;
+                }
+                currentlySelectedRecording = ComboBox.Items[0].ToString();
                 mouseRecording = !mouseRecording;     // quick toggle
+                playbackTimer.Start();      // starts the timer
 
                 if (mouseRecording == false)
                 {
+                    currentState = Enums.ApplicationState.Paused;
                     PlayPauseButtonImage.Source = new BitmapImage(new Uri(@"/Assets/PlayButton.png", UriKind.Relative));
                 }
                 else
                 {
+                    currentState = Enums.ApplicationState.Playing;
                     PlayPauseButtonImage.Source = new BitmapImage(new Uri(@"/Assets/PauseButton.png", UriKind.Relative));
                 }
+
+                lblStatus.Content = SetCurrentStateLabel(currentState).ToString();
             }
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
-            // can be clicked whenever
+
+            // Can be clicked whenever, no matter the status
+            currentState = Enums.ApplicationState.Idle;
+            lblStatus.Content = SetCurrentStateLabel(currentState).ToString();
             recordingTimer.Stop();
             playbackTimer.Stop();
+            RecordButton.IsEnabled = true;
+
+            var popup = new SaveRecordingWindow();
+            if (popup.ShowDialog() == true)
+            {
+                string filename = popup.RecordingName;     // gets name from the popup textbox. It's using the SaveRecordingWindow property
+                string newMouseRecording = @"C:\Users\zajac\Desktop\C# Projects\MouseRecorder\MouseRecorder\SavedRecordings\" + filename + ".txt";
+
+                File.WriteAllLines(newMouseRecording, recordedMovement);        // writes recorded Movement to the savedFilePath
+                comboBoxEntries.Add(filename);
+            }
         }
 
         private void RecordButton_Click(object sender, RoutedEventArgs e)
         {
+            currentState = Enums.ApplicationState.Recording;
+            lblStatus.Content = SetCurrentStateLabel(currentState).ToString();
             // can start recording ONLY when idle
             if (currentState == Enums.ApplicationState.Idle)
             {
-                // record
+                recordingTimer.Start();
+                RecordButton.IsEnabled = false;
             }
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             // open settings window
+            // play once
+            //
         }
     }
 }
