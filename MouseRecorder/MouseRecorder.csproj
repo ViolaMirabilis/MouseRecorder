@@ -12,6 +12,7 @@
     <None Remove="Assets\PauseButton.png" />
     <None Remove="Assets\PlayButton.png" />
     <None Remove="Assets\RecordButton.png" />
+    <None Remove="Assets\SettingsButton.png" />
     <None Remove="Assets\StopButton.png" />
   </ItemGroup>
 
@@ -23,6 +24,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\RecordButton.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\SettingsButton.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\StopButton.png">
