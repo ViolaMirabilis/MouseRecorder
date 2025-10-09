@@ -14,8 +14,8 @@ namespace MouseRecorder
     public partial class MainWindow : Window
     {
         // where the mouse recordings are saved
-        const string filePath = @"C:\Users\zajac\Desktop\C# Projects\MouseRecorder\MouseRecorder\Temporary\coordinates.txt";
-        const string savedRecordingsPath = @"C:\Users\zajac\Desktop\C# Projects\MouseRecorder\MouseRecorder\SavedRecordings";
+        string savedRecordingsPath = Directory.GetCurrentDirectory() + @"\SavedRecordings";
+        //const string savedRecordingsPath = @"C:\Users\zajac\Desktop\C# Projects\MouseRecorder\MouseRecorder\SavedRecordings";
 
         private Enums.ApplicationState currentState = Enums.ApplicationState.Idle;
 
