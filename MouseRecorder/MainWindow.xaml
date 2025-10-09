@@ -65,7 +65,7 @@
 
         <Label Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Content="Playback count: " FontSize="14" FontFamily="Bahnschrift" VerticalAlignment="Center" HorizontalAlignment="Left"/>
 
-        <TextBox x:Name="tbPlaybackCount" Grid.Row="2" Grid.Column="3" Height="20" Width="30" Text="∞" FontSize="16" FontFamily="Bahnschrift"/>
+        <TextBox x:Name="tbPlaybackCount" Grid.Row="2" Grid.Column="3" Height="20" Width="30" Text="∞" FontSize="16" FontFamily="Bahnschrift" HorizontalContentAlignment="Center"/>
 
 
     </Grid>

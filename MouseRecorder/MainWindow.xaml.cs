@@ -100,7 +100,7 @@ namespace MouseRecorder
             }   
         }
 
-        private void ProcessMouseRecordingFile(string currentlySelectedRecording)
+        private void ReadMouseRecordingFile(string currentlySelectedRecording)
         {
             string file = $@"{savedRecordingsPath}\{CurrentlySelectedRecording}.txt";
 
@@ -184,10 +184,7 @@ namespace MouseRecorder
                 if (action == "RClick") RightMouseClick();
 
                 // STOPS the playback on F6
-                if ((GetAsyncKeyState(STOPREPLAY) & 0x8000) != 0)
-                {
-                    playbackTimer.Stop();
-                }
+                if ((GetAsyncKeyState(STOPREPLAY) & 0x8000) != 0) break;        // breaks, because it is no longer using the playbackTimer
 
                 await Task.Delay(8);        // 8ms
             } 
@@ -221,7 +218,7 @@ namespace MouseRecorder
         #region Buttons Logic
         private async void PlayPauseButton_Click(object sender, RoutedEventArgs e)
         {
-            ProcessMouseRecordingFile(CurrentlySelectedRecording);
+            ReadMouseRecordingFile(CurrentlySelectedRecording);
 
             if (currentState == Enums.ApplicationState.Idle || currentState == Enums.ApplicationState.Paused || currentState == Enums.ApplicationState.Playing)
             {
