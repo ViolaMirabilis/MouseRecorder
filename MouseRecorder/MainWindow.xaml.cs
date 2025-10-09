@@ -93,11 +93,14 @@ namespace MouseRecorder
 
         private void FillComboBoxEntriesOnInit()
         {
+
             string[] fileEntries = Directory.GetFiles(savedRecordingsPath);
             foreach (var fileName in fileEntries)
             {
                 ComboBoxEntries.Add(Path.GetFileNameWithoutExtension(fileName));
-            }   
+            }
+
+            CurrentlySelectedRecording = Path.GetFileNameWithoutExtension(fileEntries[0]);      // sets the first file from the ComboBox as currently selected, so the user can start the program right away, without having to manually set the script.
         }
 
         private void ReadMouseRecordingFile(string currentlySelectedRecording)
@@ -184,7 +187,11 @@ namespace MouseRecorder
                 if (action == "RClick") RightMouseClick();
 
                 // STOPS the playback on F6
-                if ((GetAsyncKeyState(STOPREPLAY) & 0x8000) != 0) break;        // breaks, because it is no longer using the playbackTimer
+                if ((GetAsyncKeyState(STOPREPLAY) & 0x8000) != 0)
+                {
+                    mouseReplaying = false;
+                    break;
+                }
 
                 await Task.Delay(8);        // 8ms
             } 
